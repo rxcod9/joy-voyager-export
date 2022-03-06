@@ -77,10 +77,10 @@ class DataTypeExport implements
 
     /**
      * @param DataType $dataType
-     * @param array $ids
-     * @param array $input
-     * @param string $writerType
-     * @param string $fileName
+     * @param array    $ids
+     * @param array    $input
+     * @param string   $writerType
+     * @param string   $fileName
      */
     public function __construct(
         DataType $dataType,
@@ -89,11 +89,11 @@ class DataTypeExport implements
         $writerType = Excel::XLSX,
         $fileName = 'export'
     ) {
-        $this->dataType = $dataType;
-        $this->ids = $ids;
-        $this->input = $input;
-        $this->writerType = $writerType;
-        $this->fileName = ($fileName ?? $this->dataType->slug) . '.' . Str::lower($writerType);
+        $this->dataType        = $dataType;
+        $this->ids             = $ids;
+        $this->input           = $input;
+        $this->writerType      = $writerType;
+        $this->fileName        = ($fileName ?? $this->dataType->slug) . '.' . Str::lower($writerType);
         $this->dataTypeContent = app($this->dataType->model_name);
     }
 
@@ -170,7 +170,7 @@ class DataTypeExport implements
         // If a column has a relationship associated with it, we do not want to show that field
         $this->removeRelationshipField($this->dataType, 'browse');
 
-        $headings = [];
+        $headings   = [];
         $headings[] = '#'; // index column
         foreach ($this->dataType->browseRows as $row) {
             $headings[] = $row->getTranslatedAttribute('display_name');
@@ -186,7 +186,7 @@ class DataTypeExport implements
         // If a column has a relationship associated with it, we do not want to show that field
         $this->removeRelationshipField($this->dataType, 'browse');
 
-        $columns = [];
+        $columns   = [];
         $columns[] = $data->id;
         foreach ($this->dataType->browseRows as $row) {
             $column = null;
@@ -196,13 +196,13 @@ class DataTypeExport implements
 
             if (isset($row->details->view)) {
                 $column = trim(strip_tags((string) view($row->details->view, [
-                    'row' => $row,
-                    'dataType' => $this->dataType,
+                    'row'             => $row,
+                    'dataType'        => $this->dataType,
                     'dataTypeContent' => $this->dataTypeContent,
-                    'content' => $data->{$row->field},
-                    'action' => 'browse',
-                    'view' => 'browse',
-                    'options' => $row->details
+                    'content'         => $data->{$row->field},
+                    'action'          => 'browse',
+                    'view'            => 'browse',
+                    'options'         => $row->details
                 ])));
             } elseif ($row->type == 'image') {
                 if (!filter_var($data->{$row->field}, FILTER_VALIDATE_URL)) {
@@ -212,15 +212,15 @@ class DataTypeExport implements
                 }
             } elseif ($row->type == 'relationship') {
                 $column = trim(strip_tags((string) view('voyager::formfields.relationship', [
-                    'view' => 'browse',
-                    'row' => $row,
-                    'dataType' => $this->dataType,
-                    'data' => $data,
+                    'view'            => 'browse',
+                    'row'             => $row,
+                    'dataType'        => $this->dataType,
+                    'data'            => $data,
                     'dataTypeContent' => $this->dataTypeContent,
-                    'content' => $data->{$row->field},
-                    'action' => 'browse',
-                    'view' => 'browse',
-                    'options' => $row->details
+                    'content'         => $data->{$row->field},
+                    'action'          => 'browse',
+                    'view'            => 'browse',
+                    'options'         => $row->details
                 ])));
             } elseif ($row->type == 'select_multiple') {
                 $values = [];
@@ -253,7 +253,6 @@ class DataTypeExport implements
                 }
                 $column = implode(', ', $values);
             } elseif (($row->type == 'select_dropdown' || $row->type == 'radio_btn') && property_exists($row->details, 'options')) {
-
                 $column = $row->details->options->{$data->{$row->field}} ?? '';
             } elseif ($row->type == 'date' || $row->type == 'timestamp') {
                 if (property_exists($row->details, 'format') && !is_null($data->{$row->field})) {
