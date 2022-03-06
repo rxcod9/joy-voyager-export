@@ -6,6 +6,7 @@ namespace Joy\VoyagerExport;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use TCG\Voyager\Facades\Voyager;
 
 /**
  * Class VoyagerExportServiceProvider
@@ -26,6 +27,8 @@ class VoyagerExportServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Voyager::addAction(\Joy\VoyagerExport\Actions\ExportAction::class);
+
         $this->registerPublishables();
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'joy-voyager-export');
