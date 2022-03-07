@@ -49,11 +49,15 @@ return [
     ],
 
     /*
-    | The default export format for voyager-export package.
+    | The default export disk.
+    */
+    'disk' => env('VOYAGER_EXPORT_DISK', null),
+
+    /*
+    | The default export writerType.
     | 
     | Supported: "Xlsx", "Csv", "Csv", "Ods", "Xls",
     |   "Slk", "Xml", "Gnumeric", "Html", "Mpdf", "Dompdf", "Tcpdf"
-    |
     */
-    'format' => env('VOYAGER_EXPORT_FORMAT', 'Xlsx'),
+    'writerType' => env('VOYAGER_EXPORT_WRITER_TYPE', 'Xlsx'),
 ];
