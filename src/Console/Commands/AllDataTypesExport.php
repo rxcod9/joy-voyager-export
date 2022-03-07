@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Joy\VoyagerExport\Exports\AllDataTypesExport as ExportsAllDataTypesExport;
 use Maatwebsite\Excel\Excel;
 use Symfony\Component\Console\Input\InputOption;
-use TCG\Voyager\Facades\Voyager;
-use TCG\Voyager\Models\DataType;
 
 class AllDataTypesExport extends Command
 {

@@ -74,7 +74,7 @@ class ExportAction extends AbstractAction
         Gate::authorize('browse', app($dataType->model_name));
 
         $writerType = $this->writerType ?? config('joy-voyager-export.writerType', Excel::XLSX);
-        $fileName = $this->fileName ?? ($dataType->slug . '.' . Str::lower($writerType));
+        $fileName   = $this->fileName ?? ($dataType->slug . '.' . Str::lower($writerType));
 
         return (new DataTypeExport(
             $dataType,
