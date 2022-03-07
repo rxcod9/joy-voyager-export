@@ -3,49 +3,33 @@
 namespace Joy\VoyagerExport\Exports;
 
 // use App\Models\User;
+
+use Illuminate\Console\OutputStyle;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use TCG\Voyager\Models\DataType;
-use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
 use TCG\Voyager\Facades\Voyager;
 
 class DataTypeExport implements
     FromQuery,
-    Responsable,
     WithMapping,
-    WithHeadings
+    WithHeadings,
+    WithTitle
 {
     use BreadRelationshipParser;
     use Exportable;
-
-    /**
-     * It's required to define the fileName within
-     * the export class when making use of Responsable.
-     */
-    protected $fileName = 'export';
-
-    /**
-     * Optional Writer Type
-     */
-    protected $writerType = Excel::XLSX;
-
-    /**
-     * Optional headers
-     */
-    protected $headers = [
-        'Content-Type' => 'text/csv',
-    ];
 
     /**
      * The dataType.
@@ -79,21 +63,15 @@ class DataTypeExport implements
      * @param DataType $dataType
      * @param array    $ids
      * @param array    $input
-     * @param string   $writerType
-     * @param string   $fileName
      */
     public function __construct(
         DataType $dataType,
-        $ids,
-        $input,
-        $writerType = Excel::XLSX,
-        $fileName = 'export'
+        $ids = [],
+        $input = []
     ) {
         $this->dataType        = $dataType;
         $this->ids             = $ids;
         $this->input           = $input;
-        $this->writerType      = $writerType;
-        $this->fileName        = ($fileName ?? $this->dataType->slug) . '.' . Str::lower($writerType);
         $this->dataTypeContent = app($this->dataType->model_name);
     }
 
@@ -198,6 +176,7 @@ class DataTypeExport implements
                 $column = trim(strip_tags((string) view($row->details->view, [
                     'row'             => $row,
                     'dataType'        => $this->dataType,
+                    'data'            => $data,
                     'dataTypeContent' => $this->dataTypeContent,
                     'content'         => $data->{$row->field},
                     'action'          => 'browse',
@@ -366,5 +345,36 @@ class DataTypeExport implements
             $columns[] = $column;
         }
         return $columns;
+    }
+
+    /**
+     * @return string
+     */
+    public function title(): string
+    {
+        return $this->dataType->getTranslatedAttribute('display_name_plural');
+    }
+
+    /**
+     * @param  OutputStyle $output
+     * @return $this
+     */
+    public function withOutput(OutputStyle $output)
+    {
+        $this->output = $output;
+
+        return $this;
+    }
+
+    /**
+     * @return OutputStyle
+     */
+    public function getConsoleOutput(): OutputStyle
+    {
+        if (!$this->output instanceof OutputStyle) {
+            $this->output = new OutputStyle(new StringInput(''), new NullOutput());
+        }
+
+        return $this->output;
     }
 }

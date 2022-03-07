@@ -6,6 +6,8 @@ namespace Joy\VoyagerExport;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Joy\VoyagerExport\Console\Commands\AllDataTypesExport;
+use Joy\VoyagerExport\Console\Commands\DataTypeExport;
 use TCG\Voyager\Facades\Voyager;
 
 /**
@@ -74,7 +76,9 @@ class VoyagerExportServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/voyager-export.php', 'joy-voyager-export');
 
-        $this->registerCommands();
+        if ($this->app->runningInConsole()) {
+            $this->registerCommands();
+        }
     }
 
     /**
@@ -99,6 +103,17 @@ class VoyagerExportServiceProvider extends ServiceProvider
 
     protected function registerCommands(): void
     {
-        //
+        $this->app->singleton('command.joy-voyager.export', function () {
+            return new DataTypeExport();
+        });
+
+        $this->app->singleton('command.joy-voyager.export-all', function () {
+            return new AllDataTypesExport();
+        });
+
+        $this->commands([
+            'command.joy-voyager.export',
+            'command.joy-voyager.export-all'
+        ]);
     }
 }

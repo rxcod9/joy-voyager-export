@@ -5,6 +5,7 @@ namespace Joy\VoyagerExport\Actions;
 use Joy\VoyagerExport\Exports\DataTypeExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use TCG\Voyager\Actions\AbstractAction;
 use TCG\Voyager\Facades\Voyager;
 use Maatwebsite\Excel\Excel;
@@ -12,8 +13,7 @@ use Maatwebsite\Excel\Excel;
 class ExportAction extends AbstractAction
 {
     /**
-     * It's required to define the fileName within
-     * the export class when making use of Responsable.
+     * Optional File Name
      */
     protected $fileName;
 
@@ -73,12 +73,16 @@ class ExportAction extends AbstractAction
         // Check permission
         Gate::authorize('browse', app($dataType->model_name));
 
-        return new DataTypeExport(
+        $writerType = $this->writerType ?? config('joy-voyager-export.writerType', Excel::XLSX);
+        $fileName   = $this->fileName ?? ($dataType->slug . '.' . Str::lower($writerType));
+
+        return (new DataTypeExport(
             $dataType,
             array_filter($ids),
             request()->all(),
-            $this->writerType ?? config('joy-voyager-export.format', Excel::XLSX),
-            $this->fileName ?? $this->dataType->slug
+        ))->download(
+            $fileName,
+            $writerType
         );
     }
 
