@@ -3,7 +3,6 @@
 namespace Joy\VoyagerExport\Http\Traits;
 
 use Illuminate\Http\Request;
-use TCG\Voyager\Facades\Voyager;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel;
 

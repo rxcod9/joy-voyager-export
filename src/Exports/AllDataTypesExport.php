@@ -26,7 +26,7 @@ class AllDataTypesExport implements
     protected $input = [];
 
     /**
-     * @param array    $input
+     * @param array $input
      */
     public function set(
         $input = []
