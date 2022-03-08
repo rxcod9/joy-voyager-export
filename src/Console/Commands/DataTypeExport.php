@@ -55,7 +55,13 @@ class DataTypeExport extends Command
 
         $export = app()->make($exportClass);
 
-        $export->set($dataType)->withOutput($this->output)->store(
+        $export->set(
+            $dataType,
+            [],
+            $this->options()
+        )->withOutput(
+            $this->output
+        )->store(
             $path,
             $disk,
             $writerType

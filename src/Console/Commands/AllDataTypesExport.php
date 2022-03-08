@@ -42,7 +42,11 @@ class AllDataTypesExport extends Command
 
         $export = app()->make($exportClass);
 
-        $export->withOutput($this->output)->store(
+        $export->set(
+            $this->options()
+        )->withOutput(
+            $this->output
+        )->store(
             $path,
             $disk,
             $writerType

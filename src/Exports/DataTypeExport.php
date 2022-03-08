@@ -15,9 +15,12 @@ use TCG\Voyager\Models\DataType;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Joy\VoyagerExport\Events\BreadDataExported;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\BeforeWriting;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TCG\Voyager\Facades\Voyager;
@@ -26,7 +29,8 @@ class DataTypeExport implements
     FromQuery,
     WithMapping,
     WithHeadings,
-    WithTitle
+    WithTitle,
+    WithEvents
 {
     use BreadRelationshipParser;
     use Exportable;
@@ -74,6 +78,19 @@ class DataTypeExport implements
         $this->input           = $input;
         $this->dataTypeContent = app($this->dataType->model_name);
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function registerEvents(): array
+    {
+        return [
+            // Handle by a closure.
+            BeforeWriting::class => function(BeforeWriting $event) {
+                event(new BreadDataExported($this->dataType, $this->input));
+            },          
+        ];
     }
 
     public function query()

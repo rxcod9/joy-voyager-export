@@ -2,19 +2,51 @@
 
 namespace Joy\VoyagerExport\Exports;
 
-// use App\Models\User;
-
 use Illuminate\Console\OutputStyle;
+use Joy\VoyagerExport\Events\AllBreadDataExported;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Events\BeforeWriting;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TCG\Voyager\Facades\Voyager;
 
 class AllDataTypesExport implements
-    WithMultipleSheets
+    WithMultipleSheets,
+    WithEvents
 {
     use Exportable;
+
+    /**
+     * The input.
+     *
+     * @var array
+     */
+    protected $input = [];
+
+    /**
+     * @param array    $input
+     */
+    public function set(
+        $input = []
+    ) {
+        $this->input = $input;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function registerEvents(): array
+    {
+        return [
+            // Handle by a closure.
+            BeforeWriting::class => function (BeforeWriting $event) {
+                event(new AllBreadDataExported($this->input));
+            },
+        ];
+    }
 
     /**
      * @return array
@@ -32,7 +64,11 @@ class AllDataTypesExport implements
             }
 
             $export                                                           = app()->make($exportClass);
-            $sheets[$dataType->getTranslatedAttribute('display_name_plural')] = $export->set($dataType);
+            $sheets[$dataType->getTranslatedAttribute('display_name_plural')] = $export->set(
+                $dataType,
+                [],
+                $this->input
+            );
         }
 
         return $sheets;
