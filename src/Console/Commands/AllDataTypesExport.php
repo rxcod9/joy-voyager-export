@@ -39,7 +39,11 @@ class AllDataTypesExport extends Command
             $url
         ));
 
-        (new ExportsAllDataTypesExport())->withOutput($this->output)->store(
+        $exportClass = 'joy-voyager-export.export-all';
+
+        $export = app()->make($exportClass);
+
+        $export->withOutput($this->output)->store(
             $path,
             $disk,
             $writerType

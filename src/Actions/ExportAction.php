@@ -34,13 +34,14 @@ class ExportAction extends AbstractAction
 
     public function getPolicy()
     {
-        return 'read';
+        return 'browse';
     }
 
     public function getAttributes()
     {
         return [
             'class' => 'btn btn-sm btn-primary',
+            'target' => '_blank',
         ];
     }
 
@@ -76,11 +77,19 @@ class ExportAction extends AbstractAction
         $writerType = $this->writerType ?? config('joy-voyager-export.writerType', Excel::XLSX);
         $fileName   = $this->fileName ?? ($dataType->slug . '.' . Str::lower($writerType));
 
-        return (new DataTypeExport(
+        $exportClass = 'joy-voyager-export.export';
+
+        if (app()->bound("joy-voyager-export.$slug.export")) {
+            $exportClass = "joy-voyager-export.$slug.export";
+        }
+
+        $export = app($exportClass);
+
+        return $export->set(
             $dataType,
             array_filter($ids),
             request()->all(),
-        ))->download(
+        )->download(
             $fileName,
             $writerType
         );

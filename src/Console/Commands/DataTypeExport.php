@@ -48,7 +48,15 @@ class DataTypeExport extends Command
             $url
         ));
 
-        (new ExportsDataTypeExport($dataType))->withOutput($this->output)->store(
+        $exportClass = 'joy-voyager-export.export';
+
+        if (app()->bound("joy-voyager-export." . $dataType->slug . ".export")) {
+            $exportClass = "joy-voyager-export." . $dataType->slug . ".export";
+        }
+
+        $export = app()->make($exportClass);
+
+        $export->set($dataType)->withOutput($this->output)->store(
             $path,
             $disk,
             $writerType

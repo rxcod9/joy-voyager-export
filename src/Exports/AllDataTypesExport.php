@@ -25,7 +25,15 @@ class AllDataTypesExport implements
         $dataTypes = Voyager::model('DataType')->get();
 
         foreach ($dataTypes as $dataType) {
-            $sheets[] = new DataTypeExport($dataType);
+
+            $exportClass = 'joy-voyager-export.export';
+
+            if (app()->bound("joy-voyager-export." . $dataType->slug . ".export")) {
+                $exportClass = "joy-voyager-export." . $dataType->slug . ".export";
+            }
+
+            $export = app()->make($exportClass);
+            $sheets[$dataType->getTranslatedAttribute('display_name_plural')] = $export->set($dataType);
         }
 
         return $sheets;

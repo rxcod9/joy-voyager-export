@@ -56,12 +56,16 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Joy\\VoyagerExport\\VoyagerExportServiceProvider"
+                "Joy\\VoyagerExport\\VoyagerExportServiceProvider",
+                "Joy\\VoyagerExport\\ExportServiceProvider"
             ]
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "henzeb/composer-link": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -64,7 +64,7 @@ class DataTypeExport implements
      * @param array    $ids
      * @param array    $input
      */
-    public function __construct(
+    public function set(
         DataType $dataType,
         $ids = [],
         $input = []
@@ -73,6 +73,7 @@ class DataTypeExport implements
         $this->ids             = $ids;
         $this->input           = $input;
         $this->dataTypeContent = app($this->dataType->model_name);
+        return $this;
     }
 
     public function query()
@@ -168,7 +169,9 @@ class DataTypeExport implements
         $columns[] = $data->id;
         foreach ($this->dataType->browseRows as $row) {
             $column = null;
-            if ($data->{$row->field . '_browse'}) {
+            if ($data->{$row->field . '_export'}) {
+                $data->{$row->field} = $data->{$row->field . '_export'};
+            } elseif ($data->{$row->field . '_browse'}) {
                 $data->{$row->field} = $data->{$row->field . '_browse'};
             }
 
@@ -340,7 +343,7 @@ class DataTypeExport implements
                 $column = implode(', ', $values);
             } else {
                 // view('voyager::multilingual.input-hidden-bread-browse');
-                $values[] = $data->{$row->field};
+                $column = $data->{$row->field};
             }
             $columns[] = $column;
         }
