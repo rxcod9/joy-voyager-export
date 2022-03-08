@@ -2,7 +2,6 @@
 
 namespace Joy\VoyagerExport\Actions;
 
-use Joy\VoyagerExport\Exports\DataTypeExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -40,7 +39,7 @@ class ExportAction extends AbstractAction
     public function getAttributes()
     {
         return [
-            'class' => 'btn btn-sm btn-primary',
+            'class'  => 'btn btn-sm btn-primary',
             'target' => '_blank',
         ];
     }

@@ -5,7 +5,6 @@ namespace Joy\VoyagerExport\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Joy\VoyagerExport\Exports\AllDataTypesExport as ExportsAllDataTypesExport;
 use Maatwebsite\Excel\Excel;
 use Symfony\Component\Console\Input\InputOption;
 
