@@ -39,7 +39,7 @@ class ExportAction extends AbstractAction
     public function getAttributes()
     {
         return [
-            'id' => 'bulk_export_btn',
+            'id'     => 'bulk_export_btn',
             'class'  => 'btn btn-primary',
             'target' => '_blank',
         ];
