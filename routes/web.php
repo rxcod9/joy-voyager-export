@@ -27,10 +27,10 @@ Route::group(['prefix' => config('joy-voyager-export.admin_prefix', 'admin')], f
         Route::group(['middleware' => 'admin.user'], function () use ($namespacePrefix) {
             // event(new RoutingAdmin()); @deprecated
 
+            $breadController = $namespacePrefix.'VoyagerBaseController';
+
             try {
                 foreach (Voyager::model('DataType')::all() as $dataType) {
-                    $breadController = $namespacePrefix.'VoyagerBaseController';
-
                     Route::get($dataType->slug . '/export', $breadController.'@export')->name($dataType->slug.'.export');
                 }
             } catch (\InvalidArgumentException $e) {
