@@ -23,7 +23,7 @@ class ExportAction extends AbstractAction
 
     public function getTitle()
     {
-        return 'Export';
+        return __('joy-voyager-export::generic.bulk_export');
     }
 
     public function getIcon()
