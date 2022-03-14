@@ -97,6 +97,10 @@ class VoyagerExportServiceProvider extends ServiceProvider
         ], 'views');
 
         $this->publishes([
+            __DIR__ . '/../resources/views/bread/partials' => resource_path('views/vendor/voyager/bread/partials'),
+        ], 'voyager-actions-views');
+
+        $this->publishes([
             __DIR__ . '/../resources/lang' => resource_path('lang/vendor/joy-voyager-export'),
         ], 'translations');
     }

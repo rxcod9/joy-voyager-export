@@ -74,7 +74,7 @@ class ExportAction extends AbstractAction
         // Check permission
         Gate::authorize('browse', app($dataType->model_name));
 
-        $writerType = $this->writerType ?? config('joy-voyager-export.writerType', Excel::XLSX);
+        $writerType = request()->get('writerType', $this->writerType ?? config('joy-voyager-export.writerType', Excel::XLSX));
         $fileName   = $this->fileName ?? ($dataType->slug . '.' . Str::lower($writerType));
 
         $exportClass = 'joy-voyager-export.export';
@@ -93,6 +93,16 @@ class ExportAction extends AbstractAction
             $fileName,
             $writerType
         );
+    }
+
+    public function view()
+    {
+        $view = 'joy-voyager-export::bread.export';
+
+        if (view()->exists('joy-voyager-export::' . $this->dataType->slug . '.export')) {
+            $view = 'joy-voyager-export::' . $this->dataType->slug . '.export';
+        }
+        return $view;
     }
 
     protected function getSlug(Request $request)

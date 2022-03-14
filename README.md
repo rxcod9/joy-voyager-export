@@ -26,8 +26,10 @@ By 🐼 [Ramakant Gangwar](https://github.com/rxcod9).
 # 1. Require this Package in your fresh Laravel/Voyager project
 composer require joy/voyager-export
 
-# 2. Publish
+# 2. Publish evrything
 php artisan vendor:publish --provider="Joy\VoyagerExport\VoyagerExportServiceProvider" --force
+# 3. OR Publish Voyager overrided actions blade [MANDATORY STEP FOR EXPORT BULK GROUP BUTTON TO WORK]
+php artisan vendor:publish --provider="Joy\VoyagerExport\VoyagerExportServiceProvider" --tag=voyager-actions-views --force
 ```
 
 ---
