@@ -1,7 +1,7 @@
 <div class="btn-group" role="group">
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="{{ $action->getIcon() }}"></i> {{ $action->getTitle() }}
+            <i class="{{ $action->getIcon() }}"></i> <span class="hidden-xs hidden-sm">{{ $action->getTitle() }}</span>
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
