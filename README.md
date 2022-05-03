@@ -26,6 +26,15 @@ By 🐼 [Ramakant Gangwar](https://github.com/rxcod9).
 # 1. Require this Package in your fresh Laravel/Voyager project
 composer require joy/voyager-export
 
+# OR If you're facing this issue
+
+###
+# Problem 1 - Root composer.json requires joy/voyager-export ^1.2 -> satisfiable by joy/voyager-export[v1.2.1, ..., v1.2.17]. - joy/voyager-export[v1.2.1, ..., v1.2.17] require illuminate/support ^7|^8 -> found illuminate/support[v7.0.0, ..., 7.x-dev, v8.0.0, ..., 8.x-dev] but these were not loaded, likely because it conflicts with another require.
+###
+
+#use following command
+composer require joy/voyager-export -W
+
 # 2. Publish evrything
 php artisan vendor:publish --provider="Joy\VoyagerExport\VoyagerExportServiceProvider" --force
 # 3. OR Publish Voyager overrided actions blade [MANDATORY STEP FOR EXPORT BULK GROUP BUTTON TO WORK]
