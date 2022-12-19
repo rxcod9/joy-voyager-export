@@ -5,7 +5,6 @@ namespace Joy\VoyagerExport\Exports;
 // use App\Models\User;
 
 use Illuminate\Console\OutputStyle;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;

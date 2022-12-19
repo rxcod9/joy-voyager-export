@@ -34,11 +34,11 @@ class AsyncExport implements ShouldQueue
         $disk,
         $writerType
     ) {
-        $this->user = $user;
-        $this->export = $export;
-        $this->path = $path;
-        $this->url = $url;
-        $this->disk = $disk;
+        $this->user       = $user;
+        $this->export     = $export;
+        $this->path       = $path;
+        $this->url        = $url;
+        $this->disk       = $disk;
         $this->writerType = $writerType;
     }
 
