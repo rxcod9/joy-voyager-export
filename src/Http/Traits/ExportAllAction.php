@@ -3,7 +3,9 @@
 namespace Joy\VoyagerExport\Http\Traits;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Joy\VoyagerExport\Jobs\AsyncExport;
 use Maatwebsite\Excel\Excel;
 
 trait ExportAllAction
@@ -32,11 +34,40 @@ trait ExportAllAction
 
         $export = app($exportClass);
 
-        return $export->set(
-            $request->all(),
-        )->download(
-            $fileName,
+        $export->set(
+            request()->all(),
+        );
+
+        if (!$this->shouldExportAllAsync($export)) {
+            return $export->download(
+                $fileName,
+                $writerType
+            );
+        }
+
+        $disk = config('joy-voyager-export.disk');
+
+        $path = 'public/exports/export-all-' . date('YmdHis') . '.' . Str::lower($writerType);
+
+        $url = config('app.url') . Storage::disk($disk)->url($path);
+
+        AsyncExport::dispatch(
+            request()->user(),
+            $export,
+            $path,
+            $url,
+            $disk,
             $writerType
         );
+
+        return redirect()->back()->with([
+            'message'    => __('joy-voyager-export::generic.successfully_export_queued_all'),
+            'alert-type' => 'success',
+        ]);
+    }
+
+    protected function shouldExportAllAsync($export)
+    {
+        return config('joy-voyager-export.all_async', false) === true;
     }
 }

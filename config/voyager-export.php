@@ -60,4 +60,29 @@ return [
     |   "Slk", "Xml", "Gnumeric", "Html", "Mpdf", "Dompdf", "Tcpdf"
     */
     'writerType' => env('VOYAGER_EXPORT_WRITER_TYPE', 'Xlsx'),
+
+    /*
+     * If you want to export asynchronously through queue.
+     */
+    'async' => env('VOYAGER_EXPORT_ASYNC', false),
+
+    /*
+     * If you want to export all asynchronously through queue.
+     */
+    'all_async' => env('VOYAGER_EXPORT_ALL_ASYNC', false),
+
+    /*
+     * If you want to export asynchronously through queue when number exported of exported items are large.
+     */
+    'auto_large_async' => env('VOYAGER_EXPORT_AUTO_LARGE_ASYNC', false),
+
+    /*
+     * If you want to export asynchronously through queue when number exported of exported items are large.
+     */
+    'auto_large_async_max_number' => env('VOYAGER_EXPORT_AUTO_LARGE_ASYNC_MAX_NUMBER', 500),
+
+    /*
+     * Configure Notification via options.
+     */
+    'notification_via' => array_filter(explode(',', env('VOYAGER_EXPORT_NOTIFICATION_VIA', 'mail,database'))),
 ];

@@ -4,7 +4,9 @@ namespace Joy\VoyagerExport\Actions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Joy\VoyagerExport\Jobs\AsyncExport;
 use TCG\Voyager\Actions\AbstractAction;
 use TCG\Voyager\Facades\Voyager;
 use Maatwebsite\Excel\Excel;
@@ -85,14 +87,38 @@ class ExportAction extends AbstractAction
 
         $export = app($exportClass);
 
-        return $export->set(
+        $export->set(
             $dataType,
             array_filter($ids),
             request()->all(),
-        )->download(
-            $fileName,
+        );
+
+        if (!$this->shouldExportAsync($export)) {
+            return $export->download(
+                $fileName,
+                $writerType
+            );
+        }
+
+        $disk = config('joy-voyager-export.disk');
+
+        $path = 'public/exports/' . $dataType->slug . '-' . date('YmdHis') . '.' . Str::lower($writerType);
+
+        $url = config('app.url') . Storage::disk($disk)->url($path);
+
+        AsyncExport::dispatch(
+            request()->user(),
+            $export,
+            $path,
+            $url,
+            $disk,
             $writerType
         );
+
+        return redirect($comingFrom)->with([
+            'message'    => __('joy-voyager-export::generic.successfully_export_queued') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'alert-type' => 'success',
+        ]);
     }
 
     public function view()
@@ -114,5 +140,21 @@ class ExportAction extends AbstractAction
         }
 
         return $slug;
+    }
+
+    protected function shouldExportAsync($export)
+    {
+        if (config('joy-voyager-export.async', false) === true) {
+            return true;
+        }
+
+        if (
+            config('joy-voyager-export.auto_large_async', false) === true &&
+            $export->query()->count() >= (int) config('joy-voyager-export.auto_large_async_max_number', 500)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

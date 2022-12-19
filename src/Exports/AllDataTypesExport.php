@@ -63,8 +63,8 @@ class AllDataTypesExport implements
                 $exportClass = 'joy-voyager-export.' . $dataType->slug . '.export';
             }
 
-            $export                                                           = app()->make($exportClass);
-            $sheets[$dataType->getTranslatedAttribute('display_name_plural')] = $export->set(
+            $export = app()->make($exportClass);
+            $sheets[] = $export->set(
                 $dataType,
                 [],
                 $this->input

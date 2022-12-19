@@ -4,7 +4,9 @@ namespace Joy\VoyagerExport\Http\Traits;
 
 use Illuminate\Http\Request;
 use TCG\Voyager\Facades\Voyager;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Joy\VoyagerExport\Jobs\AsyncExport;
 use Maatwebsite\Excel\Excel;
 
 trait ExportAction
@@ -43,12 +45,52 @@ trait ExportAction
 
         $export = app($exportClass);
 
-        return $export->set(
+        $export->set(
             $dataType,
             $request->all(),
-        )->download(
-            $fileName,
+        );
+
+        if (!$this->shouldExportAsync($export)) {
+            return $export->download(
+                $fileName,
+                $writerType
+            );
+        }
+
+        $disk = config('joy-voyager-export.disk');
+
+        $path = 'public/exports/' . $dataType->slug . '-' . date('YmdHis') . '.' . Str::lower($writerType);
+
+        $url = config('app.url') . Storage::disk($disk)->url($path);
+
+        AsyncExport::dispatch(
+            request()->user(),
+            $export,
+            $path,
+            $url,
+            $disk,
             $writerType
         );
+
+        return redirect()->back()->with([
+            'message'    => __('joy-voyager-export::generic.successfully_export_queued') . " {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'alert-type' => 'success',
+        ]);
+    }
+
+    protected function shouldExportAsync($export)
+    {
+        if (config('joy-voyager-export.async', false) === true) {
+            return true;
+        }
+
+        if (
+            config('joy-voyager-export.auto_large_async', false) === true &&
+            $export->query()->count() >= (int) config('joy-voyager-export.auto_large_async_max_number', 500)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
