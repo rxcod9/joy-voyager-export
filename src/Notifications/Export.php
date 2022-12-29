@@ -3,7 +3,6 @@
 namespace Joy\VoyagerExport\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -25,13 +24,13 @@ class Export extends Notification
         $url
     ) {
         $this->path = $path;
-        $this->url = $url;
+        $this->url  = $url;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -42,7 +41,7 @@ class Export extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed                                          $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
@@ -57,14 +56,14 @@ class Export extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
             'path' => $this->path,
-            'url' => $this->url,
+            'url'  => $this->url,
         ];
     }
 }
