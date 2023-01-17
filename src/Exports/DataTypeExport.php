@@ -22,7 +22,7 @@ use Maatwebsite\Excel\Events\BeforeWriting;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use TCG\Voyager\Facades\Voyager;
-use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
+use Joy\VoyagerCore\Http\Controllers\Traits\BreadRelationshipParser;
 use TCG\Voyager\Models\DataType;
 
 class DataTypeExport implements
